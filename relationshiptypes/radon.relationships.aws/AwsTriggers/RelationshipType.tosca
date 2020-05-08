@@ -8,3 +8,15 @@ relationship_types:
       abstract: "false"
       final: "false"
       targetNamespace: "radon.relationships.aws"
+    interfaces:
+      Configure:
+        type: tosca.interfaces.relationship.Configure
+        operations:
+          add_source:
+            implementation:
+              primary: add_source.yml
+              timeout: 0
+          add_target:
+            implementation:
+              primary: add_target.yml
+              timeout: 0
