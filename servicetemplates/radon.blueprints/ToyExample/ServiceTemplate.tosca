@@ -3,19 +3,12 @@ tosca_definitions_version: tosca_simple_yaml_1_3
 metadata:
   targetNamespace: "radon.blueprints"
 topology_template:
-  inputs:
-    secret_api_key:
-      type: string
-      required: true
-    api_key:
-      type: string
-      required: true
   node_templates:
     AwsS3Bucket:
       type: radon.nodes.aws.AwsS3Bucket
       metadata:
-        x: "278"
-        y: "289"
+        x: "149"
+        y: "287"
         displayName: "uploads"
       properties:
         size: "0 MB"
@@ -33,16 +26,16 @@ topology_template:
     AwsLambdaFunction:
       type: radon.nodes.aws.AwsLambdaFunction
       metadata:
-        x: "688"
-        y: "98"
+        x: "657"
+        y: "65"
         displayName: "create_thumbnail"
       properties:
         role_name: "create_thumbnail_role"
-        handler: "index.handler"
         schedule: null
+        handler: "index.handler"
         environment: "prod"
         memory: 512
-        name: "create_thumbnail"
+        name: { get_artifact: [ SELF, zip ] }
         runtime: "nodejs"
         timeout: 3
         role_description: "create_thumbnail_role"
@@ -55,11 +48,15 @@ topology_template:
             node: AwsPlatform
             relationship: con_HostedOn_2
             capability: host
+      artifacts:
+        zip:
+          type: radon.artifacts.archive.Zip
+          file: thumb.zip
     AwsS3Bucket_2:
       type: radon.nodes.aws.AwsS3Bucket
       metadata:
-        x: "1093"
-        y: "239"
+        x: "1132"
+        y: "311"
         displayName: "thumbnails"
       properties:
         size: "0 MB"
@@ -73,13 +70,13 @@ topology_template:
     AwsPlatform:
       type: radon.nodes.aws.AwsPlatform
       metadata:
-        x: "682"
-        y: "454"
+        x: "535"
+        y: "546"
         displayName: "eu-west-1"
       properties:
         access_key_id: { get_input: api_key }
-        secret_access_key: { get_input: secret_api_key }
         name: "Ireland"
+        secret_access_key: { get_input: secret_api_key }
         region: "eu-west-1"
   relationship_templates:
     con_HostedOn_2:
